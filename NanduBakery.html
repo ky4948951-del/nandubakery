@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nandu Bakery</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f1f5f9;
+    color:#263238;
+}
+
+header{
+    background:#2456a6;
+    color:white;
+    text-align:center;
+    padding:35px 15px;
+}
+
+header h1{
+    font-size:32px;
+    margin:5px;
+}
+
+header p{
+    margin:8px;
+}
+
+nav{
+    background:white;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 2px 8px #ddd;
+}
+
+nav a{
+    color:#2456a6;
+    text-decoration:none;
+    margin:12px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+h2{
+    color:#2456a6;
+}
+
+.categories{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:25px;
+}
+
+.categories button{
+    background:white;
+    color:#2456a6;
+    border:1px solid #ddd;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.categories button.active{
+    background:#2456a6;
+    color:white;
+}
+
+.cakes{
+    display:grid;
+    grid-template-columns:repeat(
+        auto-fit,minmax(220px,1fr)
+    );
+    gap:20px;
+}
+
+.cake{
+    background:white;
+    border-radius:15px;
+    padding:12px;
+    box-shadow:0 3px 12px #ddd;
+    text-align:center;
+}
+
+.cake img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.price{
+    color:#e63946;
+    font-size:20px;
+    font-weight:bold;
+}
+
+button{
+    border:0;
+    padding:11px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin:4px;
+}
+
+.order{
+    background:#159447;
+    color:white;
+}
+
+.edit{
+    background:#2456a6;
+    color:white;
+}
+
+.delete{
+    background:#dc3545;
+    color:white;
+}
+
+.admin{
+    background:white;
+    padding:22px;
+    margin-top:30px;
+    border-radius:15px;
+    box-shadow:0 3px 12px #ddd;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:13px;
+    margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.primary{
+    background:#2456a6;
+    color:white;
+    width:100%;
+}
+
+.hidden{
+    display:none;
+}
+
+.location{
+    display:inline-block;
+    background:#2456a6;
+    color:white;
+    padding:13px 20px;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+footer{
+    margin-top:40px;
+    background:#2456a6;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎂 Nandu Bakery</h1>
+    <p>Fresh Cakes & Sweet Memories ❤️</p>
+    <p>आपका स्वागत है!</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#cakes">Cakes</a>
+    <a href="#contact">Contact</a>
+</nav>
+
+<div class="container" id="home">
+
+<h2>🍰 Our Special Cakes</h2>
+
+<div class="categories" id="categories">
+
+<button class="active" onclick="filterCake('All',this)">
+All Cakes
+</button>
+
+<button onclick="filterCake('Birthday',this)">
+Birthday
+</button>
+
+<button onclick="filterCake('Chocolate',this)">
+Chocolate
+</button>
+
+<button onclick="filterCake('Wedding',this)">
+Wedding
+</button>
+
+<button onclick="filterCake('Pastry',this)">
+Pastry
+</button>
+
+</div>
+
+<div class="cakes" id="cakeList"></div>
+
+<h2 id="contact">📍 Our Location</h2>
+
+<a id="mapLink"
+class="location"
+href="#"
+target="_blank">
+Find Our Bakery
+</a>
+
+<h2>📱 Contact Us</h2>
+
+<div id="contacts"></div>
+
+
+<!-- ADMIN LOGIN -->
+
+<div class="admin">
+
+<h2>🔐 Admin Login</h2>
+
+<div id="loginBox">
+
+<input
+type="password"
+id="password"
+placeholder="Enter Admin Password">
+
+<button class="primary" onclick="login()">
+Login
+</button>
+
+</div>
+
+
+<!-- ADMIN PANEL -->
+
+<div id="adminPanel" class="hidden">
+
+<h2>⚙️ Manage Your Bakery</h2>
+
+<button class="delete" onclick="logout()">
+Logout
+</button>
+
+<hr>
+
+<h3>➕ Add New Cake</h3>
+
+<input id="cakeName"
+placeholder="Cake Name">
+
+<input id="cakePrice"
+type="number"
+placeholder="Cake Price ₹">
+
+<select id="cakeCategory">
+
+<option value="Birthday">Birthday</option>
+<option value="Chocolate">Chocolate</option>
+<option value="Wedding">Wedding</option>
+<option value="Pastry">Pastry</option>
+
+</select>
+
+<label>Upload Cake Photo</label>
+
+<input
+type="file"
+id="cakePhoto"
+accept="image/*">
+
+<button class="primary"
+onclick="addCake()">
+Add Cake
+</button>
+
+<hr>
+
+<h3>📱 WhatsApp Number 1</h3>
+
+<input
+id="number1"
+placeholder="91XXXXXXXXXX">
+
+<h3>📱 WhatsApp Number 2</h3>
+
+<input
+id="number2"
+placeholder="91XXXXXXXXXX">
+
+<h3>📍 Google Maps Link</h3>
+
+<input
+id="mapInput"
+placeholder="Paste Google Maps Link">
+
+<button class="primary"
+onclick="saveSettings()">
+Save Settings
+</button>
+
+</div>
+
+</div>
+</div>
+
+<footer>
+<h3>Nandu Bakery ❤️</h3>
+<p>Thank You For Visiting!</p>
+</footer>
+
+
+<script>
+
+// DEMO ADMIN PASSWORD
+const ADMIN_PASSWORD = "1234";
+
+let cakes = JSON.parse(
+localStorage.getItem("nanduCakes") || "[]"
+);
+
+let settings = JSON.parse(
+localStorage.getItem("nanduSettings") ||
+'{"number1":"","number2":"","map":""}'
+);
+
+let currentCategory = "All";
+
+let editingIndex = -1;
+
+
+// ADMIN LOGIN
+
+function login(){
+
+let pass = document.getElementById("password").value;
+
+if(pass === ADMIN_PASSWORD){
+
+document.getElementById("loginBox").classList.add("hidden");
+
+document.getElementById("adminPanel").classList.remove("hidden");
+
+document.getElementById("number1").value=settings.number1;
+document.getElementById("number2").value=settings.number2;
+document.getElementById("mapInput").value=settings.map;
+
+}else{
+
+alert("Wrong Password!");
+
+}
+
+}
+
+
+// LOGOUT
+
+function logout(){
+
+document.getElementById("adminPanel").classList.add("hidden");
+
+document.getElementById("loginBox").classList.remove("hidden");
+
+document.getElementById("password").value="";
+
+}
+
+
+// ADD OR UPDATE CAKE
+
+function addCake(){
+
+let name=document.getElementById("cakeName").value.trim();
+
+let price=document.getElementById("cakePrice").value;
+
+let category=document.getElementById("cakeCategory").value;
+
+let file=document.getElementById("cakePhoto").files[0];
+
+if(!name || !price){
+
+alert("Cake Name और Price भरें!");
+
+return;
+
+}
+
+if(editingIndex===-1 && !file){
+
+alert("Cake Photo Upload करें!");
+
+return;
+
+}
+
+function saveCake(photo){
+
+let cake={
+name:name,
+price:price,
+category:category,
+photo:photo
+};
+
+if(editingIndex===-1){
+
+cakes.push(cake);
+
+}else{
+
+cakes[editingIndex]=cake;
+
+editingIndex=-1;
+
+}
+
+saveCakes();
+
+document.getElementById("cakeName").value="";
+document.getElementById("cakePrice").value="";
+document.getElementById("cakePhoto").value="";
+
+alert("Cake Saved Successfully!");
+
+}
+
+if(file){
+
+if(file.size>1500000){
+
+alert("कृपया 1.5 MB से छोटी फोटो चुनें।");
+
+return;
+
+}
+
+let reader=new FileReader();
+
+reader.onload=function(){
+
+saveCake(reader.result);
+
+};
+
+reader.readAsDataURL(file);
+
+}else{
+
+saveCake(cakes[editingIndex].photo);
+
+}
+
+}
+
+
+// SAVE CAKES
+
+function saveCakes(){
+
+localStorage.setItem(
+"nanduCakes",
+JSON.stringify(cakes)
+);
+
+displayCakes();
+
+}
+
+
+// DISPLAY CAKES
+
+function displayCakes(){
+
+let box=document.getElementById("cakeList");
+
+box.innerHTML="";
+
+let filtered=cakes.filter(cake=>
+currentCategory==="All" ||
+cake.category===currentCategory
+);
+
+if(filtered.length===0){
+
+box.innerHTML="<p>अभी कोई केक उपलब्ध नहीं है।</p>";
+
+return;
+
+}
+
+filtered.forEach(cake=>{
+
+let index=cakes.indexOf(cake);
+
+let card=document.createElement("div");
+
+card.className="cake";
+
+let img=document.createElement("img");
+img.src=cake.photo;
+img.alt=cake.name;
+
+let title=document.createElement("h3");
+title.textContent=cake.name;
+
+let category=document.createElement("p");
+category.textContent=cake.category;
+
+let price=document.createElement("p");
+price.className="price";
+price.textContent="₹"+cake.price;
+
+let order1=document.createElement("button");
+order1.className="order";
+order1.textContent="WhatsApp 1";
+order1.onclick=()=>order(index,1);
+
+let order2=document.createElement("button");
+order2.className="order";
+order2.textContent="WhatsApp 2";
+order2.onclick=()=>order(index,2);
+
+let edit=document.createElement("button");
+edit.className="edit";
+edit.textContent="Edit";
+edit.onclick=()=>editCake(index);
+
+let del=document.createElement("button");
+del.className="delete";
+del.textContent="Delete";
+del.onclick=()=>deleteCake(index);
+
+card.append(
+img,title,category,price,
+order1,order2,edit,del
+);
+
+box.appendChild(card);
+
+});
+
+}
+
+
+// EDIT CAKE
+
+function editCake(index){
+
+let cake=cakes[index];
+
+document.getElementById("cakeName").value=cake.name;
+
+document.getElementById("cakePrice").value=cake.price;
+
+document.getElementById("cakeCategory").value=cake.category;
+
+editingIndex=index;
+
+alert("अब बदलाव करके Add Cake दबाएँ। फोटो बदलना जरूरी नहीं है।");
+
+document.querySelector(".admin").scrollIntoView();
+
+}
+
+
+// DELETE CAKE
+
+function deleteCake(index){
+
+if(confirm("क्या आप यह Cake Delete करना चाहते हैं?")){
+
+cakes.splice(index,1);
+
+saveCakes();
+
+}
+
+}
+
+
+// FILTER CAKES
+
+function filterCake(category,button){
+
+currentCategory=category;
+
+document.querySelectorAll(".categories button")
+.forEach(btn=>btn.classList.remove("active"));
+
+button.classList.add("active");
+
+displayCakes();
+
+}
+
+
+// SAVE SETTINGS
+
+function saveSettings(){
+
+settings.number1=
+document.getElementById("number1").value.replace(/\D/g,"");
+
+settings.number2=
+document.getElementById("number2").value.replace(/\D/g,"");
+
+settings.map=
+document.getElementById("mapInput").value.trim();
+
+localStorage.setItem(
+"nanduSettings",
+JSON.stringify(settings)
+);
+
+showSettings();
+
+alert("Settings Saved!");
+
+}
+
+
+// SHOW CONTACT AND LOCATION
+
+function showSettings(){
+
+let contacts=document.getElementById("contacts");
+
+contacts.innerHTML="";
+
+[settings.number1,settings.number2].forEach((number,index)=>{
+
+if(number){
+
+let link=document.createElement("a");
+
+link.href="https://wa.me/"+number;
+
+link.target="_blank";
+
+link.textContent="WhatsApp "+(index+1);
+
+link.className="location";
+
+link.style.margin="5px";
+
+contacts.appendChild(link);
+
+}
+
+});
+
+let map=document.getElementById("mapLink");
+
+if(settings.map){
+
+map.href=settings.map;
+
+map.style.display="inline-block";
+
+}else{
+
+map.style.display="none";
+
+}
+
+}
+
+
+// WHATSAPP ORDER
+
+function order(index,choice){
+
+let number=choice===1?
+settings.number1:settings.number2;
+
+if(!number){
+
+alert("पहले WhatsApp Number सेट करें!");
+
+return;
+
+}
+
+let cake=cakes[index];
+
+let message=
+"Hello Nandu Bakery! I want to order "+
+cake.name+" Price ₹"+cake.price;
+
+let url=
+"https://wa.me/"+number+
+"?text="+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+}
+
+
+// START WEBSITE
+
+displayCakes();
+
+showSettings();
+
+</script>
+
+</body>
+</html>
